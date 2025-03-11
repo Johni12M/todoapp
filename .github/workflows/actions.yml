@@ -1,41 +1,20 @@
-name: GitHub workflow for code testing
-
-# Trigger the workflow on pushes or pull requests
+name: Build
 on:
   push:
     branches:
-      - main  # Runs on pushes to the main branch
+      - main
   pull_request:
-    branches:
-      - main  # Runs on PRs targeting the main branch
-
+    types: [opened, synchronize, reopened]
 jobs:
-  build:
-    runs-on: ubuntu-latest  # The type of environment you want to run on (can also use macos-latest, windows-latest)
-
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Step 2: Set up Node.js (you can use other actions for different languages)
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
         with:
-          node-version: '16'  # Define your Node.js version
-
-      # Step 3: Install dependencies (Example with npm)
-      - name: Install dependencies
-        run: npm install
-
-      # Step 4: Run tests (Example with npm)
-      - name: Run tests
-        run: npm test
-
-      # Step 5: Upload Artifacts (e.g., test results, build output)
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: ./test-results  # Assuming your tests produce results in this folder
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
