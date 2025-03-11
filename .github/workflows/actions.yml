@@ -1,12 +1,13 @@
-name: GitHub workflow for checking code for errors which is in pull requests
+name: GitHub workflow for code testing
 
+# Trigger the workflow on pushes or pull requests
 on:
   push:
     branches:
-      - main
+      - main  # Runs on pushes to the main branch
   pull_request:
     branches:
-      - main
+      - main  # Runs on PRs targeting the main branch
 
 jobs:
   build:
@@ -31,9 +32,10 @@ jobs:
       - name: Run tests
         run: npm test
 
-      # Optional: Upload Artifacts (e.g., test results, build output)
+      # Step 5: Upload Artifacts (e.g., test results, build output)
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ./test-results  # Assuming your tests produce results in this folder
+
